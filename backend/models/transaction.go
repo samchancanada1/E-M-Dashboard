@@ -1,9 +1,12 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 type Transaction struct {
-	gorm.Model
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+
 	UserID   uint    `json:"user_id"`
 	Type     string  `json:"type"`
 	Category string  `json:"category"`

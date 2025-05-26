@@ -1,0 +1,285 @@
+basePath: /
+definitions:
+  models.Transaction:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      type:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      transactions:
+        items:
+          $ref: '#/definitions/models.Transaction'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  swagger.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  swagger.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  swagger.TransactionResponse:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      id:
+        type: integer
+      type:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  swagger.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for managing expenses and users.
+  title: Expense Management API
+  version: "1.0"
+paths:
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: Add income or expense for a user
+      parameters:
+      - description: Transaction to create
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/models.Transaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.TransactionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Add a transaction
+      tags:
+      - transactions
+  /transactions/{id}:
+    delete:
+      description: Remove a transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Delete a transaction
+      tags:
+      - transactions
+    put:
+      consumes:
+      - application/json
+      description: Update a transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated transaction
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/models.Transaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.TransactionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Update a transaction
+      tags:
+      - transactions
+  /users:
+    get:
+      description: Retrieve a list of all registered users along with their transactions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: List all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Add a user by providing name and email
+      parameters:
+      - description: User to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Create a new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/swagger.MessageResponse'
+      summary: Delete a user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Update a user
+      tags:
+      - users
+  /users/{id}/transactions:
+    get:
+      description: List all income and expenses by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/swagger.TransactionResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: Get all transactions of a user
+      tags:
+      - transactions
+swagger: "2.0"
