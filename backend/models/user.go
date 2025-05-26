@@ -10,5 +10,9 @@ type User struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
 
-	Transactions []Transaction `gorm:"foreignKey:UserID" json:"transactions,omitempty"`
+	Transactions []Transaction `gorm:"foreignKey:UserID" json:"-"`
+
+	// Virtual fields, not stored in DB
+	TotalIncome  float64 `gorm:"-" json:"total_income"`
+	TotalExpense float64 `gorm:"-" json:"total_expense"`
 }

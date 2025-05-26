@@ -7,7 +7,6 @@ import (
 	"net/http"
 )
 
-// @Router /users [post]
 // CreateUser godoc
 // @Summary Create a new user
 // @Description Add a user by providing name and email
@@ -15,7 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param user body models.User true "User to create"
-// @Success 200 {object} swagger.UserResponse
+// @Success 200 {object} models.User
 // @Failure 400 {object} swagger.ErrorResponse
 // @Failure 500 {object} swagger.ErrorResponse
 // @Router /users [post]
@@ -33,15 +32,30 @@ func CreateUser(c *gin.Context) {
 }
 
 // GetUsers godoc
-// @Summary List all users
-// @Description Retrieve a list of all registered users along with their transactions
+// @Summary List users with income/expense summary
+// @Description Get all users with total income and total expense
 // @Tags users
 // @Produce json
 // @Success 200 {array} models.User
+// @Failure 500 {object} swagger.ErrorResponse
 // @Router /users [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
 	database.DB.Preload("Transactions").Find(&users)
+
+	for i := range users {
+		var income, expense float64
+		for _, tx := range users[i].Transactions {
+			if tx.Type == "income" {
+				income += tx.Amount
+			} else if tx.Type == "expense" {
+				expense += tx.Amount
+			}
+		}
+		users[i].TotalIncome = income
+		users[i].TotalExpense = expense
+	}
+
 	c.JSON(http.StatusOK, users)
 }
 
@@ -54,7 +68,7 @@ func GetUsers(c *gin.Context) {
 // @Param id path int true "User ID"
 // @Param user body models.User true "Updated user info"
 // @Success 200 {object} models.User
-// @Failure 400 {object} swagger.UserResponse
+// @Failure 400 {object} swagger.ErrorResponse
 // @Failure 404 {object} swagger.ErrorResponse
 // @Router /users/{id} [put]
 func UpdateUser(c *gin.Context) {
@@ -79,6 +93,7 @@ func UpdateUser(c *gin.Context) {
 // @Produce json
 // @Param id path int true "User ID"
 // @Success 200 {object} swagger.MessageResponse
+// @Failure 404 {object} swagger.ErrorResponse
 // @Router /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")

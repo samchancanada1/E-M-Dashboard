@@ -3,6 +3,7 @@ package main
 import (
 	"expense-backend/database"
 	"expense-backend/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	// Swagger
@@ -21,6 +22,9 @@ import (
 func main() {
 	database.ConnectDB()
 	r := gin.Default()
+
+	// Enable CORS
+	r.Use(cors.Default())
 
    // Swagger route
     r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

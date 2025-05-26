@@ -27,10 +27,11 @@ definitions:
         type: integer
       name:
         type: string
-      transactions:
-        items:
-          $ref: '#/definitions/models.Transaction'
-        type: array
+      total_expense:
+        type: number
+      total_income:
+        description: Virtual fields, not stored in DB
+        type: number
       updated_at:
         type: string
     type: object
@@ -56,15 +57,6 @@ definitions:
         type: string
       user_id:
         type: integer
-    type: object
-  swagger.UserResponse:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -162,7 +154,7 @@ paths:
       - transactions
   /users:
     get:
-      description: Retrieve a list of all registered users along with their transactions
+      description: Get all users with total income and total expense
       produces:
       - application/json
       responses:
@@ -172,7 +164,11 @@ paths:
             items:
               $ref: '#/definitions/models.User'
             type: array
-      summary: List all users
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
+      summary: List users with income/expense summary
       tags:
       - users
     post:
@@ -192,7 +188,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/swagger.UserResponse'
+            $ref: '#/definitions/models.User'
         "400":
           description: Bad Request
           schema:
@@ -220,6 +216,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/swagger.MessageResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/swagger.ErrorResponse'
       summary: Delete a user
       tags:
       - users
@@ -249,7 +249,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.UserResponse'
+            $ref: '#/definitions/swagger.ErrorResponse'
         "404":
           description: Not Found
           schema:

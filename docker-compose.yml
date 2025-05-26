@@ -13,6 +13,8 @@ services:
       - DB_NAME=expense_db
     depends_on:
       - db
+    networks:
+      - app-network
 
   db:
     image: postgres
@@ -25,6 +27,20 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend_react
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
 volumes:
   pgdata:
+
+networks:
+  app-network:

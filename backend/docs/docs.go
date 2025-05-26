@@ -150,14 +150,14 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
-                "description": "Retrieve a list of all registered users along with their transactions",
+                "description": "Get all users with total income and total expense",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "users"
                 ],
-                "summary": "List all users",
+                "summary": "List users with income/expense summary",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -166,6 +166,12 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/models.User"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorResponse"
                         }
                     }
                 }
@@ -197,7 +203,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/swagger.UserResponse"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -256,7 +262,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.UserResponse"
+                            "$ref": "#/definitions/swagger.ErrorResponse"
                         }
                     },
                     "404": {
@@ -290,6 +296,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/swagger.MessageResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorResponse"
                         }
                     }
                 }
@@ -376,11 +388,12 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Transaction"
-                    }
+                "total_expense": {
+                    "type": "number"
+                },
+                "total_income": {
+                    "description": "Virtual fields, not stored in DB",
+                    "type": "number"
                 },
                 "updated_at": {
                     "type": "string"
@@ -420,20 +433,6 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
-                }
-            }
-        },
-        "swagger.UserResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
                 }
             }
         }
