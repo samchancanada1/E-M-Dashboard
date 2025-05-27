@@ -18,30 +18,46 @@ class UserFormDialog extends StatefulWidget {
 class _UserFormDialogState extends State<UserFormDialog> {
   late TextEditingController nameController;
   late TextEditingController emailController;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.initialUser?.name ?? '');
-    emailController = TextEditingController(text: widget.initialUser?.email ?? '');
+    nameController =
+        TextEditingController(text: widget.initialUser?.name ?? '');
+    emailController =
+        TextEditingController(text: widget.initialUser?.email ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.initialUser == null ? 'Add User' : 'Edit User'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(labelText: 'Name'),
-          ),
-          TextField(
-            controller: emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
-          ),
-        ],
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            TextFormField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an email';
+                }
+                final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                if (!emailRegex.hasMatch(value)) {
+                  return 'Enter a valid email';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -50,8 +66,10 @@ class _UserFormDialogState extends State<UserFormDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            widget.onSubmit(nameController.text, emailController.text);
-            Navigator.pop(context);
+            if (_formKey.currentState!.validate()) {
+              widget.onSubmit(nameController.text, emailController.text);
+              Navigator.pop(context);
+            }
           },
           child: const Text('Save'),
         ),
