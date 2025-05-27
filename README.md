@@ -31,18 +31,24 @@ This will start:
 - `frontend_flutter` on [http://localhost:4000](http://localhost:4000)
 - `PostgreSQL` on port `5432`
 
-## 📡 API Endpoints
+## 🔌 API Endpoints
 
-The backend folder is missing, so the list of API endpoints is not available. Once included, common endpoints may look like:
+### 👤 User Endpoints
+| Method | Endpoint             | Description            |
+|--------|----------------------|------------------------|
+| GET    | `/users`             | Get all users          |
+| POST   | `/users`             | Create a new user      |
+| PUT    | `/users/:id`         | Update a user by ID    |
+| DELETE | `/users/:id`         | Delete a user by ID    |
 
-```
-POST   /signup
-POST   /verify-otp
-GET    /onboarding/services
-POST   /onboarding/user
-GET    /users
-GET    /transactions
-```
+### 💰 Transaction Endpoints
+| Method | Endpoint                             | Description                     |
+|--------|--------------------------------------|---------------------------------|
+| GET    | `/users/:id/transactions`            | Get transactions for a user     |
+| POST   | `/transactions`                      | Create a new transaction        |
+| PUT    | `/transactions/:id`                  | Update a transaction by ID      |
+| DELETE | `/transactions/:id`                  | Delete a transaction by ID      |
+
 
 ## 📘 Swagger Documentation
 
