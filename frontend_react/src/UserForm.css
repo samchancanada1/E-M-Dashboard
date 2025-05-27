@@ -69,3 +69,9 @@ label {
 .cancel-button:hover {
   background-color: #d1d5db;
 }
+
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

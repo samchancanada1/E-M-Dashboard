@@ -6,9 +6,15 @@ import './UserForm.css';
 const UserForm = ({ user, onComplete }) => {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [emailError, setEmailError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!email || emailError) {
+      alert('Please correct the email before submitting');
+      return;
+    }
     const payload = { name, email };
     const request = user
       ? axios.put(`http://localhost:8080/users/${user.id}`, payload)
@@ -42,10 +48,21 @@ const UserForm = ({ user, onComplete }) => {
           type="email"
           placeholder="Enter email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => {
+            const value = e.target.value;
+            setEmail(value);
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+              setEmailError('Please enter a valid email address');
+            } else {
+              setEmailError('');
+            }
+          }}
           required
         />
       </label>
+
+      {emailError && <p className="error-text">{emailError}</p>}
 
       <div className="form-actions">
         <button className="submit-button" type="submit">
