@@ -6,7 +6,7 @@ An Expense Management Dashboard with both Flutter and React frontend options, po
 
 - **Frontend (Flutter Web)**: Dart, Flutter
 - **Frontend (React)**: React (structure referenced)
-- **Backend**: Not included in this package (expected in `backend/` directory)
+- **Backend**: Go (Golang)
 - **Database**: PostgreSQL
 - **Containerization**: Docker & Docker Compose
 
