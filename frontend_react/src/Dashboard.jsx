@@ -3,6 +3,9 @@ import axios from 'axios';
 import UserForm from './UserForm';
 import UserTransactions from './UserTransactions';
 import './Dashboard.css';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28FD0', '#F75F00'];
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -48,6 +51,26 @@ const Dashboard = () => {
     return <UserTransactions userId={selectedUserId} onBack={() => setSelectedUserId(null)} />;
   }
 
+  const getAverageByCategoryAndIncome = () => {
+    const categorySums = {};
+    let userCount = users.length;
+
+    users.forEach(user => {
+      user.transactions?.forEach(tx => {
+        const category = tx.category || (tx.type === "income" ? "Uncategorized Income" : "Uncategorized Expense");
+        categorySums[category] = (categorySums[category] || 0) + tx.amount;
+      });
+    });
+
+    // Prevent division by 0
+    if (userCount === 0) return [];
+
+    return Object.entries(categorySums).map(([category, sum]) => ({
+      name: category,
+      value: sum / userCount,
+    }));
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-container">
@@ -57,6 +80,28 @@ const Dashboard = () => {
         ) : (
           <>
             <button className="add-user-button" onClick={handleCreate}>➕ Add User</button>
+            {users.length > 0 && (
+              <div className="chart-container">
+                <h2>Average Expense by Category and Income</h2>
+                <PieChart width={400} height={300}>
+                  <Pie
+                    data={getAverageByCategoryAndIncome()}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    label
+                  >
+                    {getAverageByCategoryAndIncome().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </div>
+            )}
             <table className="user-table">
               <thead>
                 <tr>
