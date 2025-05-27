@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import TransactionForm from './TransactionForm';
+import './UserTransactions.css';
+
 
 const UserTransactions = ({ userId, onBack }) => {
   const [transactions, setTransactions] = useState([]);
@@ -41,43 +43,53 @@ const UserTransactions = ({ userId, onBack }) => {
   };
 
   return (
-    <div>
-      <h2>User Transactions</h2>
-      <button onClick={onBack}>← Back to Dashboard</button>
-      {showForm ? (
-        <TransactionForm
-          userId={userId}
-          transaction={editingTransaction}
-          onComplete={handleFormComplete}
-        />
-      ) : (
-        <>
-          <button onClick={handleAdd}>➕ Add Transaction</button>
-          <table border="1" cellPadding="10" style={{ marginTop: '20px' }}>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map(tx => (
-                <tr key={tx.id}>
-                  <td>{tx.type}</td>
-                  <td>{tx.category}</td>
-                  <td>${tx.amount}</td>
-                  <td>
-                    <button onClick={() => handleEdit(tx)}>✏️ Edit</button>
-                    <button onClick={() => handleDelete(tx.id)}>🗑️ Delete</button>
-                  </td>
+    <div className="transactions-page">
+      <div className="transactions-container">
+
+
+        {showForm ? (
+          <TransactionForm
+            userId={userId}
+            transaction={editingTransaction}
+            onComplete={handleFormComplete}
+          />
+        ) : (
+          <>
+            <div className="transactions-header">
+              <h2>User Transactions</h2>
+              <div>
+                <button className="back-button" onClick={onBack}>← Back</button>
+                {!showForm && (
+                  <button className="add-button" onClick={handleAdd}>➕ Add Transaction</button>
+                )}
+              </div>
+            </div>
+            <table className="transactions-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+              </thead>
+              <tbody>
+                {transactions.map(tx => (
+                  <tr key={tx.id}>
+                    <td>{tx.type}</td>
+                    <td>{tx.category}</td>
+                    <td>${tx.amount}</td>
+                    <td>
+                      <button className="edit-button" onClick={() => handleEdit(tx)}>✏️</button>
+                      <button className="delete-button" onClick={() => handleDelete(tx.id)}>🗑️</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
     </div>
   );
 };

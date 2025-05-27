@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './UserForm.css';
 
 const UserForm = ({ user, onComplete }) => {
   const [name, setName] = useState(user?.name || "");
@@ -19,22 +20,41 @@ const UserForm = ({ user, onComplete }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>{user ? "Edit User" : "Add New User"}</h3>
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        required
-      />
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
-      <button type="submit">{user ? "Update" : "Create"}</button>
-      <button type="button" onClick={onComplete}>Cancel</button>
+    <form className="user-form" onSubmit={handleSubmit}>
+      <h3 className="form-title">{user ? "Edit User" : "Add New User"}</h3>
+
+      <label>
+        Name
+        <input
+          className="form-input"
+          type="text"
+          placeholder="Enter name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          required
+        />
+      </label>
+
+      <label>
+        Email
+        <input
+          className="form-input"
+          type="email"
+          placeholder="Enter email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+      </label>
+
+      <div className="form-actions">
+        <button className="submit-button" type="submit">
+          {user ? "Update" : "Create"}
+        </button>
+        <button className="cancel-button" type="button" onClick={onComplete}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 };

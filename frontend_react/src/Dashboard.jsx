@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import UserForm from './UserForm';
 import UserTransactions from './UserTransactions';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -48,42 +49,44 @@ const Dashboard = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Expense Dashboard</h1>
-      {showForm ? (
-        <UserForm user={editingUser} onComplete={handleFormComplete} />
-      ) : (
-        <>
-          <button onClick={handleCreate}>➕ Add User</button>
-          <table border="1" cellPadding="10" style={{ marginTop: '20px' }}>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Total Income</th>
-                <th>Total Expense</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map(user => (
-                <tr key={user.id}>
-                  <td>
-                    <button onClick={() => setSelectedUserId(user.id)} style={{ all: 'unset', cursor: 'pointer', color: 'blue' }}>
-                      {user.name}
-                    </button>
-                  </td>
-                  <td>${user.total_income}</td>
-                  <td>${user.total_expense}</td>
-                  <td>
-                    <button onClick={() => handleEdit(user)}>✏️ Edit</button>
-                    <button onClick={() => handleDelete(user.id)}>🗑️ Delete</button>
-                  </td>
+    <div className="dashboard">
+      <div className="dashboard-container">
+        <h1 className="dashboard-title">Expense Dashboard</h1>
+        {showForm ? (
+          <UserForm user={editingUser} onComplete={handleFormComplete} />
+        ) : (
+          <>
+            <button className="add-user-button" onClick={handleCreate}>➕ Add User</button>
+            <table className="user-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Total Income</th>
+                  <th>Total Expense</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id}>
+                    <td>
+                      <button className="link-button" onClick={() => setSelectedUserId(user.id)}>
+                        {user.name}
+                      </button>
+                    </td>
+                    <td>${user.total_income}</td>
+                    <td>${user.total_expense}</td>
+                    <td>
+                      <button className="edit-button" onClick={() => handleEdit(user)}>✏️ Edit</button>
+                      <button className="delete-button" onClick={() => handleDelete(user.id)}>🗑️ Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
     </div>
   );
 };

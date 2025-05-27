@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './TransactionForm.css';
 
 const TransactionForm = ({ userId, transaction, onComplete }) => {
   const [type, setType] = useState(transaction?.type || 'income');
@@ -25,36 +26,52 @@ const TransactionForm = ({ userId, transaction, onComplete }) => {
       .catch(err => alert("Failed to save transaction: " + err.message));
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h3>{transaction ? "Edit" : "Add"} Transaction</h3>
-      <label>
-        Type:
-        <select value={type} onChange={e => setType(e.target.value)}>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-      </label>
-      <br />
-      <label>
-        Category:
-        <input value={category} onChange={e => setCategory(e.target.value)} required />
-      </label>
-      <br />
-      <label>
-        Amount:
-        <input
-          type="number"
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-          step="0.01"
-          required
-        />
-      </label>
-      <br />
-      <button type="submit">{transaction ? "Update" : "Create"}</button>
-      <button type="button" onClick={onComplete}>Cancel</button>
-    </form>
+   return (
+    <div className="transaction-form-wrapper">
+      <form className="transaction-form" onSubmit={handleSubmit}>
+        <h3 className="form-title">{transaction ? "Edit" : "Add"} Transaction</h3>
+
+        <label>
+          Type:
+          <select value={type} onChange={e => setType(e.target.value)} className="form-input">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </label>
+
+        <label>
+          Category:
+          <input
+            type="text"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+            required
+            className="form-input"
+          />
+        </label>
+
+        <label>
+          Amount:
+          <input
+            type="number"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+            step="0.01"
+            required
+            className="form-input"
+          />
+        </label>
+
+        <div className="form-actions">
+          <button className="submit-button" type="submit">
+            {transaction ? "Update" : "Create"}
+          </button>
+          <button className="cancel-button" type="button" onClick={onComplete}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
