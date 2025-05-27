@@ -104,7 +104,6 @@ class UserTransactionsPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
                           margin: const EdgeInsets.all(8),

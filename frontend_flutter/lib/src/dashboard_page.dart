@@ -4,6 +4,7 @@ import 'package:flutter_web_project/models/user.dart';
 import 'package:flutter_web_project/providers/user_provider.dart';
 import 'package:flutter_web_project/src/user_transactions_page.dart';
 import 'package:flutter_web_project/widgets/user_form_dialog.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -26,6 +27,34 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
+  List<PieChartSectionData> buildPieChartSections(List<User> users) {
+    final categoryTotals = <String, double>{};
+    int userCount = users.length;
+
+    for (final user in users) {
+      for (final tx in user.transactions) {
+        final category = tx.category;
+        categoryTotals[category] = (categoryTotals[category] ?? 0) + tx.amount;
+      }
+    }
+
+    final chartSections = <PieChartSectionData>[];
+
+    if (userCount == 0) return chartSections;
+
+    categoryTotals.forEach((category, total) {
+      chartSections.add(
+        PieChartSectionData(
+          value: total / userCount,
+          title: category,
+          radius: 80,
+        ),
+      );
+    });
+
+    return chartSections;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usersAsync = ref.watch(userListProvider);
@@ -45,7 +74,6 @@ class DashboardPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
                           margin: const EdgeInsets.all(8),
@@ -79,6 +107,17 @@ class DashboardPage extends ConsumerWidget {
                         ),
                       ],
                     ),
+                    if (users.isNotEmpty)
+                      SizedBox(
+                        height: 300,
+                        child: PieChart(
+                          PieChartData(
+                            sections: buildPieChartSections(users),
+                            sectionsSpace: 2,
+                            centerSpaceRadius: 40,
+                          ),
+                        ),
+                      ),
                     Expanded(
                       flex: 3,
                       child: ListView.builder(
