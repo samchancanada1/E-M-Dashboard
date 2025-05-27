@@ -1,12 +1,58 @@
-# React + Vite
+# Frontend (React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React-based web frontend for the E-M-Dashboard project.
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React**
+- **JavaScript / JSX**
+- **HTML/CSS**
+- **Docker**
 
-## Expanding the ESLint configuration
+## 🚀 Development Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+If you're running the frontend locally (outside Docker):
+
+```bash
+# Navigate to the directory
+cd frontend_react
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
+```
+
+The app will be available at [http://localhost:3000](http://localhost:3000).
+
+## 🐳 Docker Instructions
+
+This frontend is also part of the main Docker Compose setup. To run via Docker:
+
+```bash
+# From the root project directory (E-M-Dashboard)
+docker-compose up --build
+# or
+docker compose up --build
+```
+
+It will be served at [http://localhost:3000](http://localhost:3000).
+
+## 📁 Directory Structure
+
+```
+frontend_react/
+├── public/           # Static assets and HTML template
+├── src/              # Main React application source code
+│   ├── components/   # Reusable UI components
+│   ├── pages/        # Page components
+│   └── App.js        # App entry point
+├── Dockerfile        # Docker setup for this React app
+├── package.json      # Dependency list and scripts
+└── README.md         # Project documentation
+```
+
+## 🔗 Backend API
+
+Make sure the backend service is running at `http://localhost:8080` or update the API base URL in the source code if needed.
