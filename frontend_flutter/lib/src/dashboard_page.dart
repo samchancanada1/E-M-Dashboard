@@ -34,57 +34,116 @@ class DashboardPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Dashboard')),
       body: usersAsync.when(
-        data: (users) => Column(
+        data: (users) => Row(
           children: [
-            ElevatedButton(
-              onPressed: () => _showUserFormDialog(context, ref),
-              child: const Text('➕ Add User'),
-            ),
+            Spacer(),
             Expanded(
-              child: ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final User user = users[index];
-                  return ListTile(
-                    title: GestureDetector(
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => UserTransactionsPage(
-                                userId: user.id,
-                                userName: user.name,
-                              ),
-                            ),
-                          );
-                          // Refresh user list after returning
-                          ref.invalidate(userListProvider);
-                        },
-                        child: Text(user.name)),
-                    subtitle: Text(
-                      'Income: \$${user.totalIncome} | Expense: \$${user.totalExpense}',
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+              flex: 3,
+              child: Card(
+                color: Colors.white,
+                margin: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () =>
-                              _showUserFormDialog(context, ref, user: user),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            await repo.deleteUser(user.id);
-                            ref.invalidate(userListProvider);
-                          },
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: .2),
+                                blurRadius: 6,
+                                offset: Offset(2, 3),
+                              ),
+                            ],
+                            color: Colors.transparent,
+                          ),
+                          child: TextButton.icon(
+                            icon: Icon(Icons.add),
+                            onPressed: () => _showUserFormDialog(context, ref),
+                            label: const Text('Add User'),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
+                    Expanded(
+                      flex: 3,
+                      child: ListView.builder(
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          final User user = users[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ListTile(
+                              title: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => UserTransactionsPage(
+                                            userId: user.id,
+                                            userName: user.name,
+                                          ),
+                                        ),
+                                      );
+                                      // Refresh user list after returning
+                                      ref.invalidate(userListProvider);
+                                    },
+                                    child: Text(
+                                      user.name,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        decoration: TextDecoration.underline,
+                                        color: Colors.blue,
+                                      ),
+                                    )),
+                              ),
+                              subtitle: Text(
+                                'Income: \$${user.totalIncome} | Expense: \$${user.totalExpense}',
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () => _showUserFormDialog(
+                                        context, ref,
+                                        user: user),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () async {
+                                      await repo.deleteUser(user.id);
+                                      ref.invalidate(userListProvider);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Spacer()
+                  ],
+                ),
               ),
             ),
+            Spacer(),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),

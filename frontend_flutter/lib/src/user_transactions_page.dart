@@ -93,44 +93,90 @@ class UserTransactionsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text('$userName\'s Transactions')),
       body: txList.when(
-        data: (transactions) => Column(
+        data: (transactions) => Row(
           children: [
-            ElevatedButton(
-              onPressed: () => _showTransactionForm(context, ref),
-              child: const Text('Add Transaction'),
-            ),
+            Spacer(),
             Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (_, i) {
-                  final tx = transactions[i];
-                  return ListTile(
-                    title: Text('${tx.type} - ${tx.category}'),
-                    subtitle: Text('\$${tx.amount.toStringAsFixed(2)}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+              flex: 3,
+              child: Card(
+                color: Colors.white,
+                margin: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _showTransactionForm(
-                            context,
-                            ref,
-                            transaction: tx,
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: .2),
+                                blurRadius: 6,
+                                offset: Offset(2, 3),
+                              ),
+                            ],
+                            color: Colors.transparent,
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            await repo.deleteTransaction(tx.id);
-                            ref.invalidate(userTransactionsProvider(userId));
-                          },
+                          child: TextButton.icon(
+                            icon: Icon(Icons.add),
+                            onPressed: () => _showTransactionForm(context, ref),
+                            label: const Text('Add Transaction'),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
+                    Expanded(
+                      flex: 3,
+                      child: ListView.builder(
+                        itemCount: transactions.length,
+                        itemBuilder: (_, i) {
+                          final tx = transactions[i];
+                          return ListTile(
+                            title: Text('${tx.type} - ${tx.category}'),
+                            subtitle: Text('\$${tx.amount.toStringAsFixed(2)}'),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () => _showTransactionForm(
+                                    context,
+                                    ref,
+                                    transaction: tx,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () async {
+                                    await repo.deleteTransaction(tx.id);
+                                    ref.invalidate(
+                                        userTransactionsProvider(userId));
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Spacer()
+                  ],
+                ),
               ),
             ),
+            Spacer(),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),

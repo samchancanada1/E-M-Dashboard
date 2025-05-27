@@ -9,7 +9,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Web Expense App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        // primaryColor: Colors.blue,
+        useMaterial3: false,
       ),
       home: const DashboardPage(),
       debugShowCheckedModeBanner: false,
