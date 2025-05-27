@@ -30,7 +30,7 @@ services:
     networks:
       - app-network
 
-  frontend:
+  frontend_react:
     build: ./frontend_react
     ports:
       - "3000:80"
@@ -38,6 +38,16 @@ services:
       - backend
     networks:
       - app-network
+  
+  frontend_flutter:
+    build: ./frontend_flutter
+    ports:
+      - "4000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 
 volumes:
   pgdata:
